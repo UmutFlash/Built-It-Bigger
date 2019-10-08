@@ -3,8 +3,8 @@ package com.udacity.gradle.builditbigger;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.Pair;
-import android.widget.Toast;
 
 import com.example.jokelibrary.JokeActivity;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -18,14 +18,15 @@ import java.io.IOException;
 class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
     private static MyApi myApiService = null;
     private Context mContext;
+    private static final String TAG = EndpointsAsyncTask.class.getName();
 
-    EndpointsAsyncTask(Context context){
+    EndpointsAsyncTask(Context context) {
         mContext = context;
     }
 
     @Override
     protected String doInBackground(Pair<Context, String>... params) {
-        if(myApiService == null) {  // Only do this once
+        if (myApiService == null) {  // Only do this once
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
                     // options for running against local devappserver
@@ -46,7 +47,8 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
         try {
             return myApiService.getJoke().execute().getData();
         } catch (IOException e) {
-            return e.getMessage();
+            Log.e(TAG, e.getMessage());
+            return null;
         }
     }
 
